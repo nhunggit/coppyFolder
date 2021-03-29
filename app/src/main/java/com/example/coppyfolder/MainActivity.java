@@ -68,6 +68,7 @@ import javax.crypto.spec.SecretKeySpec;
     BiometricPrompt.PromptInfo promptInfo;
     int mode = 2;
     int state= 0;
+    private final String ACTION_START_ACTIVITY="android.intent.action.startInAppActivity";
 
     //Bkav Nhugnltk
     private static final String SET_PROPERTIES="bkav.intent.action.SET_PROPERTIES";
@@ -87,8 +88,8 @@ import javax.crypto.spec.SecretKeySpec;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         Log.d("nhungltk", "onCreate: ");
+        setContentView(R.layout.activity_main);
 
         //Bkav Nhungltk
         Intent intent1=new Intent(SET_PROPERTIES);
@@ -101,8 +102,6 @@ import javax.crypto.spec.SecretKeySpec;
         intent2.putExtra(EVENT_NAME,"onCreate");
         sendBroadcast(intent2);
 
-        Button login=findViewById(R.id.encrypt);
-        Button decrpyt=findViewById(R.id.decypt);
         Executor executor = ContextCompat.getMainExecutor(this);
          biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
@@ -115,37 +114,41 @@ import javax.crypto.spec.SecretKeySpec;
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
                 Toast.makeText(getApplicationContext(), "Authentication succeeded", Toast.LENGTH_SHORT).show();
-                try {
+                //try {
+                Intent intent= new Intent();
+                intent.setAction(ACTION_START_ACTIVITY);
+                intent.setComponent(new ComponentName("com.example.coppyfolder","com.example.coppyfolder.SercureReceive"));
+                sendBroadcast(intent);
                     Log.d("nhungltk", "onAuthenticationSucceeded: "+state);
-                    if(state==1) {
-                        checkPermission();
-                        showFileChooser();
-//                        String fileEncrypt = Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhung6.txt";
-//                        FileInputStream fileInputStream = new FileInputStream(fileEncrypt);
-//                        String fileout = Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhunge3";
-//                        FileOutputStream fileOutputStream = new FileOutputStream(fileout);
-                        FileInputStream fileInputStream = new FileInputStream(path);
-                        FileOutputStream fileOutputStream = new FileOutputStream(path + "e");
-                        //luu ten file ma hoa va giai ma vao db
-                        encrypt(fileInputStream, fileOutputStream);
-                    }else if(state==0){
-                        Log.d("nhungltk", "onAuthenticationSucceeded: ");
-                        checkPermission();
-                        FileInputStream fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhunge3");
-                        FileOutputStream fos = new FileOutputStream(Environment.getExternalStorageDirectory() +"/" + "nhung" + "/" + "nhungd.txt                                                                 ");
-                        decrypt(fis,fos);
-                   }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                }
+                    //if(state==1) {
+//                        checkPermission();
+//                        showFileChooser();
+////                        String fileEncrypt = Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhung6.txt";
+////                        FileInputStream fileInputStream = new FileInputStream(fileEncrypt);
+////                        String fileout = Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhunge3";
+////                        FileOutputStream fileOutputStream = new FileOutputStream(fileout);
+//                        FileInputStream fileInputStream = new FileInputStream(path);
+//                        FileOutputStream fileOutputStream = new FileOutputStream(path + "e");
+//                        //luu ten file ma hoa va giai ma vao db
+//                        encrypt(fileInputStream, fileOutputStream);
+                    //}else if(state==0){
+//                        Log.d("nhungltk", "onAuthenticationSucceeded: ");
+//                        checkPermission();
+//                        FileInputStream fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhunge3");
+//                        FileOutputStream fos = new FileOutputStream(Environment.getExternalStorageDirectory() +"/" + "nhung" + "/" + "nhungd.txt                                                                 ");
+//                        decrypt(fis,fos);
+                   //}
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (NoSuchPaddingException e) {
+//                    e.printStackTrace();
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                } catch (InvalidKeyException e) {
+//                    e.printStackTrace();
+//                }
             }
 
             public void onAuthenticationFailed() {
@@ -168,8 +171,6 @@ import javax.crypto.spec.SecretKeySpec;
         }
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Biometric login for my app").setDescription("Login in using your biometric credential").setNegativeButtonText("Use account password").build();
-        login.setOnClickListener(this);
-        decrpyt.setOnClickListener(this);
         SQLiteDatabase.loadLibs(this);
 
     }
@@ -230,26 +231,26 @@ import javax.crypto.spec.SecretKeySpec;
 
     @Override
     public void onClick(View v) {
-            if(v.getId()==R.id.encrypt){
-                state=1;
-                try {
-                    authenticationKey(getCipher().ENCRYPT_MODE);
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }else if(v.getId()==R.id.decypt){
-                state =0;
-                try {
-                    authenticationKey(getCipher().ENCRYPT_MODE);
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-                //nhung.getInstance(this).insert();
-            }
+//            if(v.getId()==R.id.encrypt){
+//                state=1;
+//                try {
+//                    authenticationKey(getCipher().ENCRYPT_MODE);
+//                } catch (NoSuchPaddingException e) {
+//                    e.printStackTrace();
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                }
+//            }else if(v.getId()==R.id.decypt){
+//                state =0;
+//                try {
+//                    authenticationKey(getCipher().ENCRYPT_MODE);
+//                } catch (NoSuchPaddingException e) {
+//                    e.printStackTrace();
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                }
+//                //nhung.getInstance(this).insert();
+//            }
             //else if(v.getId()==)
     }
     public void authenticationKey(int mode){
@@ -391,7 +392,35 @@ import javax.crypto.spec.SecretKeySpec;
         return null;
     }
 
-//    public void encryptDataBase(String passphrase) throws IOException {
+    @Override
+    protected void onStart() {
+        try {
+            authenticationKey(getCipher().ENCRYPT_MODE);
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    public void chooseFile() throws FileNotFoundException {
+        showFileChooser();
+//                        String fileEncrypt = Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhung6.txt";
+//                        FileInputStream fileInputStream = new FileInputStream(fileEncrypt);
+//                        String fileout = Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhunge3";
+//                        FileOutputStream fileOutputStream = new FileOutputStream(fileout);
+        FileInputStream fileInputStream = new FileInputStream(path);
+        FileOutputStream fileOutputStream = new FileOutputStream(path + "e");
+        //luu ten file ma hoa va giai ma vao db
+//        encrypt(fileInputStream, fileOutputStream);
+    }
+    //    public void encryptDataBase(String passphrase) throws IOException {
 //
 //        File originalFile = context.getDatabasePath(DB_NAME);
 //
