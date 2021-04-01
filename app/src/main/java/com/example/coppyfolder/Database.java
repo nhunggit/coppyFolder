@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME="secure.db";
+    public static final String DATABASE_NAME="secure_database.db";
     public static final int DATABASE_VERSION = 1;
     public static final String TABLE_NAME="TABLE_SECURE";
     public static final String COLUMN_PATH_ENCRYPT="PATH_ENCRYPT";
     public static final String COLUMN_PATH_DECRYPT="PATH_DECRYPT";
     public static final String COLUMN_ID= "COLUMN_ID";
-    private static final String SQL_CREATE_TABLE_QUERY="CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_ID + " INT AUTO_INCREMENT NOT NULL, " + COLUMN_PATH_ENCRYPT + " VARCHAR (255) NOT NULL, " + COLUMN_PATH_DECRYPT  + " VARCHAR (255) NOT NULL )";
+    private static final String SQL_CREATE_TABLE_QUERY="CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_PATH_ENCRYPT + " VARCHAR (255) NOT NULL, " + COLUMN_PATH_DECRYPT  + " VARCHAR (255) NOT NULL )";
+    //+ COLUMN_ID + " INT AUTO INCREMENT NOT NULL, "
     private static Database instance;
     private String PASS_DB= "nhung123";
 
@@ -67,9 +68,12 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase= instance.getWritableDatabase(PASS_DB);
         Cursor cursor= sqLiteDatabase.rawQuery(String.format("SELECT * FROM '%s';",TABLE_NAME), null);
         while (cursor.moveToFirst()){
-            if(cursor.isAfterLast()){
-                String path= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_ENCRYPT));
-                list.add(path);
+            if(!cursor.isAfterLast()){
+                String pathEncrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_ENCRYPT));
+                String pathDecrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_DECRYPT));
+                //int id= cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+                //Path path= new Path(pathEncrypt, pathDecrypt);
+                list.add(pathEncrypt);
                 cursor.moveToNext();
             }
         }

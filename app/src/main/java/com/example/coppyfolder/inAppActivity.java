@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -38,6 +41,8 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
     private Button choosseFile;
     private static final int FILE_SELECT_CODE = 0;
     String path = null;
+    public List<String> list;
+    SecureAsynctask secureAsynctask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,12 +56,28 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
         choosseFile.setOnClickListener(this);
 
         SQLiteDatabase.loadLibs(this);
+
+//        secureAsynctask=new SecureAsynctask(this);
+//        secureAsynctask.execute();
+        RecyclerView recyclerView= (RecyclerView)findViewById(R.id.recycle_view);
+        try {
+            // Your code, where the exception was thrown
+            list= Database.getInstance(getApplicationContext()).getList();
+            SecureAdapter secureAdapter= new SecureAdapter(list);
+            recyclerView.setAdapter(secureAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            Log.d("nhungltk", "onCreate: "+list.size());
+        } catch (Exception ex) {
+            // Here we are logging the exception to see why it happened.
+            Log.e("my app", ex.toString());
+        }
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId()==(R.id.bt_choose_file)) {
             showFileChooser();
+            Log.d("nhungltk", "onClick: "+list.size());
         }
     }
     private void showFileChooser() {
