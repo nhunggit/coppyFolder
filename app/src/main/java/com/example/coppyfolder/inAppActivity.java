@@ -17,11 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,8 +44,20 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
     private Button choosseFile;
     private static final int FILE_SELECT_CODE = 0;
     String path = null;
-    public List<String> list;
-    SecureAsynctask secureAsynctask;
+    public List<Path> list;
+    SecureAdapter secureAdapter;
+    process process;
+    callbackListener callbackListener= new callbackListener() {
+        @Override
+        public void callback(int posistion) {
+            FragmentManager manager = getSupportFragmentManager();
+            fragmentExternalView fragmentExternalView= new fragmentExternalView(posistion,list);
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment, fragmentExternalView).addToBackStack(null);
+            transaction.commit();
+        }
+    };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,32 +67,26 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
 //        toolbar= (Toolbar)findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
+        process = new process();
+
         choosseFile= (Button)findViewById(R.id.bt_choose_file);
         choosseFile.setOnClickListener(this);
 
         SQLiteDatabase.loadLibs(this);
+        list= Database.getInstance(this).getList();
 
-//        secureAsynctask=new SecureAsynctask(this);
-//        secureAsynctask.execute();
-        RecyclerView recyclerView= (RecyclerView)findViewById(R.id.recycle_view);
-        try {
-            // Your code, where the exception was thrown
-            list= Database.getInstance(getApplicationContext()).getList();
-            SecureAdapter secureAdapter= new SecureAdapter(list);
-            recyclerView.setAdapter(secureAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            Log.d("nhungltk", "onCreate: "+list.size());
-        } catch (Exception ex) {
-            // Here we are logging the exception to see why it happened.
-            Log.e("my app", ex.toString());
-        }
+        FragmentManager manager = getSupportFragmentManager();
+        AllFileFragment fragment= new AllFileFragment(list,callbackListener);
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.fragment, fragment).addToBackStack(null);
+        transaction.commit();
+
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId()==(R.id.bt_choose_file)) {
             showFileChooser();
-            Log.d("nhungltk", "onClick: "+list.size());
         }
     }
     private void showFileChooser() {
@@ -108,7 +117,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
                     Log.d("nhungltk", "File Uri: " + uri.toString());
                     // Get the path
                     try {
-                        path = getPath(this, uri);
+                        path = process.getPath(this, uri);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
@@ -119,8 +128,13 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
                         try {
                             FileInputStream fileInputStream = new FileInputStream(path);
                             FileOutputStream fileOutputStream = new FileOutputStream(path + "e");
-                            Database.getInstance(inAppActivity.this).insertPath(path, path+"e");
-                            encrypt(fileInputStream, fileOutputStream);
+                            Database.getInstance(inAppActivity.this).insertPath(path+"e", path);
+                            Log.d("nhungltk", "onActivityResult: "+path);
+                            process.encrypt(fileInputStream, fileOutputStream);
+                            list.add(0, new Path(path+"e",path));
+                            File file=new File(path);
+                            file.delete();
+                            secureAdapter.notifyItemInserted(0);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -137,48 +151,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-
-    public static String getPath(Context context, Uri uri) throws URISyntaxException {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
-            Cursor cursor = null;
-
-            try {
-                cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow("_data");
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                // Eat it
-            }
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
-    }
-    static void encrypt(FileInputStream fis, FileOutputStream fos) throws IOException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidKeyException {
-
-        // Length is 16 byte
-        SecretKeySpec sks = new SecretKeySpec("MyDifficultPassw".getBytes(),
-                "AES");
-        // Create cipher
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, sks);
-        // Wrap the output stream
-        CipherOutputStream cos = new CipherOutputStream(fos, cipher);
-        // Write bytes
-        int b;
-        byte[] d = new byte[8];
-        while ((b = fis.read(d)) != -1) {
-            cos.write(d, 0, b);
-        }
-        // Flush and close streams.
-        cos.flush();
-        cos.close();
-        fis.close();
+    interface callbackListener{
+        void callback(int posistion);
     }
 }

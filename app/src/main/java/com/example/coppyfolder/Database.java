@@ -3,6 +3,7 @@ package com.example.coppyfolder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
@@ -55,6 +56,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void deletePath(String pathEncrypt, String pathDecrypt){
+        Log.d("nhungltk", "deletePath: ");
         SQLiteDatabase sqLiteDatabase= instance.getWritableDatabase(PASS_DB);
         ContentValues contentValues= new ContentValues();
         contentValues.put(COLUMN_PATH_DECRYPT, pathDecrypt);
@@ -63,20 +65,20 @@ public class Database extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public List<String> getList(){
-        List<String> list= new ArrayList();
+    public List<Path> getList(){
+        List<Path> list= new ArrayList();
         SQLiteDatabase sqLiteDatabase= instance.getWritableDatabase(PASS_DB);
+        int count=0;
         Cursor cursor= sqLiteDatabase.rawQuery(String.format("SELECT * FROM '%s';",TABLE_NAME), null);
-        while (cursor.moveToFirst()){
-            if(!cursor.isAfterLast()){
-                String pathEncrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_ENCRYPT));
-                String pathDecrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_DECRYPT));
-                //int id= cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
-                //Path path= new Path(pathEncrypt, pathDecrypt);
-                list.add(pathEncrypt);
-                cursor.moveToNext();
-            }
-        }
+        cursor.moveToFirst();
+        do{
+            String pathEncrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_ENCRYPT));
+            String pathDecrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_DECRYPT));
+            //int id= cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+            Path path= new Path(pathEncrypt, pathDecrypt);
+            list.add(path);
+            cursor.moveToNext();
+        }while (!cursor.isAfterLast());
         cursor.close();
         sqLiteDatabase.close();
 

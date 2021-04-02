@@ -5,12 +5,20 @@
     >
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/image"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/path"/>
+    <ImageButton
+        android:id="@+id/tuy_chon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_baseline_menu_24"
+        android:layout_gravity="center_vertical"
+        />
+
 
 </LinearLayout>
