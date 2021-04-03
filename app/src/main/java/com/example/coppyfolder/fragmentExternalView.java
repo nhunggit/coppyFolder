@@ -39,7 +39,7 @@ public class fragmentExternalView extends Fragment {
         ImageView imageView=(ImageView)view.findViewById(R.id.image_view);
         Path path=list.get(possistion);
 
-        Bitmap bitmap= BitmapFactory.decodeFile(path.getPathDecrypt());
+        Bitmap bitmap= BitmapFactory.decodeFile(path.getDecrypt());
         imageView.setImageBitmap(bitmap);
         return view;
     }

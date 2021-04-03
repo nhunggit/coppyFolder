@@ -1,6 +1,7 @@
 package com.example.coppyfolder;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,9 @@ public class AllFileFragment extends Fragment {
     process process;
     inAppActivity.callbackListener callbackListener;
 
-    public AllFileFragment(List<Path> list, inAppActivity.callbackListener callbackListener) {
-        this.list = list;
-        this.callbackListener=callbackListener;
+    public AllFileFragment(SecureAdapter secureAdapter, inAppActivity.callbackListener callbackListener) {
+        this.secureAdapter= secureAdapter;
+        this.callbackListener= callbackListener;
     }
 
     @Nullable
@@ -30,9 +31,13 @@ public class AllFileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.all_file_fragment,container, false);
         RecyclerView recyclerView= (RecyclerView)view.findViewById(R.id.recycle_view);
-        secureAdapter= new SecureAdapter(list,callbackListener);
         recyclerView.setAdapter(secureAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

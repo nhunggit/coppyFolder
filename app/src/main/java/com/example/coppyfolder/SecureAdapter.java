@@ -58,7 +58,7 @@ public class SecureAdapter extends RecyclerView.Adapter<SecureAdapter.ViewHolder
         TextView textView= holder.path;
         ImageButton imageButton_menu= holder.imageButton_menu;
 
-        Bitmap bitmap= BitmapFactory.decodeFile(path.getPathDecrypt());
+        Bitmap bitmap= BitmapFactory.decodeFile(path.getDecrypt());
         imageButton.setImageBitmap(bitmap);
 
 //        Uri selectedImage = Uri.parse(path.getPathDecrypt());
@@ -123,7 +123,10 @@ public class SecureAdapter extends RecyclerView.Adapter<SecureAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(list!=null) {
+            return list.size();
+        }else
+            return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

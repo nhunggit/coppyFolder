@@ -17,8 +17,9 @@ public class Database extends SQLiteOpenHelper {
     public static final String TABLE_NAME="TABLE_SECURE";
     public static final String COLUMN_PATH_ENCRYPT="PATH_ENCRYPT";
     public static final String COLUMN_PATH_DECRYPT="PATH_DECRYPT";
+    public static final String COLUMN_DECRYPT="DECRYPT";
     public static final String COLUMN_ID= "COLUMN_ID";
-    private static final String SQL_CREATE_TABLE_QUERY="CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_PATH_ENCRYPT + " VARCHAR (255) NOT NULL, " + COLUMN_PATH_DECRYPT  + " VARCHAR (255) NOT NULL )";
+    private static final String SQL_CREATE_TABLE_QUERY="CREATE TABLE " + TABLE_NAME + " ( " + COLUMN_PATH_ENCRYPT + " VARCHAR (255) NOT NULL, " + COLUMN_PATH_DECRYPT  + " VARCHAR (255) NOT NULL, " + COLUMN_DECRYPT + " VARCHAR (255) NOT NULL )";
     //+ COLUMN_ID + " INT AUTO INCREMENT NOT NULL, "
     private static Database instance;
     private String PASS_DB= "nhung123";
@@ -45,12 +46,13 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    public void insertPath(String pathEncrypt, String pathDecrypt){
+    public void insertPath(String pathEncrypt, String pathDecrypt, String decrypt){
         SQLiteDatabase sqLiteDatabase= instance.getWritableDatabase(PASS_DB);
 
         ContentValues contentValues= new ContentValues();
         contentValues.put(COLUMN_PATH_ENCRYPT,pathEncrypt);
         contentValues.put(COLUMN_PATH_DECRYPT,pathDecrypt);
+        contentValues.put(COLUMN_DECRYPT, decrypt);
         sqLiteDatabase.insert(TABLE_NAME,null,contentValues);
         sqLiteDatabase.close();
     }
@@ -71,14 +73,15 @@ public class Database extends SQLiteOpenHelper {
         int count=0;
         Cursor cursor= sqLiteDatabase.rawQuery(String.format("SELECT * FROM '%s';",TABLE_NAME), null);
         cursor.moveToFirst();
-        do{
+        while (!cursor.isAfterLast()){
             String pathEncrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_ENCRYPT));
             String pathDecrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_DECRYPT));
+            String decrypt= cursor.getString(cursor.getColumnIndex(COLUMN_DECRYPT));
             //int id= cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
-            Path path= new Path(pathEncrypt, pathDecrypt);
+            Path path= new Path(pathEncrypt, pathDecrypt, decrypt);
             list.add(path);
             cursor.moveToNext();
-        }while (!cursor.isAfterLast());
+        }
         cursor.close();
         sqLiteDatabase.close();
 
