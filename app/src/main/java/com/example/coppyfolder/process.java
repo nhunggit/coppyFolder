@@ -182,7 +182,7 @@ public class process {
             FileUtils.copy(source, destination);
             //Bkav Nhungltk: OTA -start
             //xoa file da copy thanh cong
-            deleteDirectory(sourceFile);
+            sourceFile.delete();
             //Bkav Nhungltk: OTA -end
         } catch (IOException e) {
             e.printStackTrace();

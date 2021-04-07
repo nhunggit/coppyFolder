@@ -181,9 +181,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
                             process.encrypt(fileInputStream, fileOutputStream);
                             process.copyFile(new File(path),new File(decrypt));
                             database.insertPath(encrypt, path, decrypt);
-                            process.encrypt(fileInputStream, fileOutputStream);
                             list.add(0, new Path(encrypt,path,decrypt));
-                            origal.delete();
 
                             secureAdapter.notifyItemInserted(0);
                         } catch (FileNotFoundException e) {

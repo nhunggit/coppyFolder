@@ -67,9 +67,6 @@ import javax.crypto.spec.SecretKeySpec;
     BiometricPrompt.PromptInfo promptInfo;
     private final String ACTION_START_ACTIVITY="android.intent.action.startInAppActivity";
 
-    //Bkav Nhungltk:
-    private static final String ACTION_OPEN_GALLERY="android.intent.action.OPEN_GALLERY";
-
     private Button login;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -80,6 +77,9 @@ import javax.crypto.spec.SecretKeySpec;
 
         login= (Button)findViewById(R.id.login);
         login.setOnClickListener(this);
+//        Intent intent = new Intent(Intent.ACTION_RUN);
+//        intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.password.ChooseLockGeneric"));
+//        startActivity(intent);
 
         Executor executor = ContextCompat.getMainExecutor(this);
          biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
@@ -95,23 +95,6 @@ import javax.crypto.spec.SecretKeySpec;
                 Toast.makeText(getApplicationContext(), "Authentication succeeded", Toast.LENGTH_SHORT).show();
                 Intent intent= new Intent(getApplicationContext(),inAppActivity.class);
                 startActivity(intent);
-//                        Log.d("nhungltk", "onAuthenticationSucceeded: ");
-//                        checkPermission();
-//                        FileInputStream fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/" + "nhung" + "/" + "nhunge3");
-//                        FileOutputStream fos = new FileOutputStream(Environment.getExternalStorageDirectory() +"/" + "nhung" + "/" + "nhungd.txt                                                                 ");
-//                        decrypt(fis,fos);
-                   //}
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (NoSuchPaddingException e) {
-//                    e.printStackTrace();
-//                } catch (NoSuchAlgorithmException e) {
-//                    e.printStackTrace();
-//                } catch (InvalidKeyException e) {
-//                    e.printStackTrace();
-//                }
             }
 
             public void onAuthenticationFailed() {
@@ -134,9 +117,28 @@ import javax.crypto.spec.SecretKeySpec;
         }
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Biometric login for my app").setDescription("Login in using your biometric credential").setNegativeButtonText("Use account password").build();
+
+//        Intent activityIntent = activity.getIntent();
+//        Intent intent = new Intent(activity, SetupChooseLockGeneric.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+//
+//        // Copy the original extras into the new intent
+//        copyBooleanExtra(activityIntent, intent,
+//               EXTRA_KEY_HAS_CHALLENGE, false);
+//        copyBooleanExtra(activityIntent, intent,
+//                EXTRA_SHOW_OPTIONS_BUTTON, false);
+//        intent.putExtra(PASSWORD_TYPE_KEY, selectedLockType.defaultQuality);
+//        intent.putExtra(EXTRA_KEY_CHALLENGE,
+//                activityIntent.getLongExtra(EXTRA_KEY_CHALLENGE, 0));
+//        startActivity(intent);
+//        finish();
         SQLiteDatabase.loadLibs(this);
 
     }
+        private static void copyBooleanExtra(Intent from, Intent to, String name,
+                                             boolean defaultValue) {
+            to.putExtra(name, from.getBooleanExtra(name, defaultValue));
+        }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void generateSecretKey(KeyGenParameterSpec keyGenParameterSpec) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
@@ -180,6 +182,7 @@ import javax.crypto.spec.SecretKeySpec;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.

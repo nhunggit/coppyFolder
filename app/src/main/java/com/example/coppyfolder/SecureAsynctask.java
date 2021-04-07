@@ -32,12 +32,6 @@ public class SecureAsynctask extends AsyncTask<Void, List<Path>, Void> {
 
     protected void onProgressUpdate(List<Path> values) {
         super.onProgressUpdate(values);
-//        RecyclerView recyclerView= (RecyclerView)contextParent.findViewById(R.id.recycle_view);
-//        List<Path> listpath= values;
-//        SecureAdapter secureAdapter= new SecureAdapter(list);
-//        recyclerView.setAdapter(secureAdapter);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(contextParent));
-//        Log.d("nhungltk", "onCreate: "+list.size());
     }
 
     @Override
