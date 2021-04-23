@@ -59,7 +59,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
     private String folderDecrypt= folderSecure + File.separator+".Decrypt";
     private File encryptFolder;
     private File decryptFolder;
-    callbackListener callbackListener= new callbackListener() {
+    callbackListener callbackListener= new callbackListener () {
         @Override
         public void callback(int posistion) {
             FragmentManager manager = getSupportFragmentManager();

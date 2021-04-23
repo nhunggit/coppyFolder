@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
@@ -75,6 +76,24 @@ import javax.crypto.spec.SecretKeySpec;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        process process= new process();
+        try {
+            Log.d("nhungltk", "onCreate: "+process.encryptMsg("nhungltk"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidParameterSpecException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         login= (Button)findViewById(R.id.login);
         login.setOnClickListener(this);
 //        Intent intent = new Intent(Intent.ACTION_RUN);
@@ -118,20 +137,6 @@ import javax.crypto.spec.SecretKeySpec;
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Biometric login for my app").setDescription("Login in using your biometric credential").setNegativeButtonText("Use account password").build();
 
-//        Intent activityIntent = activity.getIntent();
-//        Intent intent = new Intent(activity, SetupChooseLockGeneric.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-//
-//        // Copy the original extras into the new intent
-//        copyBooleanExtra(activityIntent, intent,
-//               EXTRA_KEY_HAS_CHALLENGE, false);
-//        copyBooleanExtra(activityIntent, intent,
-//                EXTRA_SHOW_OPTIONS_BUTTON, false);
-//        intent.putExtra(PASSWORD_TYPE_KEY, selectedLockType.defaultQuality);
-//        intent.putExtra(EXTRA_KEY_CHALLENGE,
-//                activityIntent.getLongExtra(EXTRA_KEY_CHALLENGE, 0));
-//        startActivity(intent);
-//        finish();
         SQLiteDatabase.loadLibs(this);
 
     }
@@ -220,6 +225,7 @@ import javax.crypto.spec.SecretKeySpec;
         SecretKey secretKey = null;
         try {
             secretKey = getSecretKey();
+            Log.d("nhungltk", "authenticationKey: "+secretKey);
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (CertificateException e) {

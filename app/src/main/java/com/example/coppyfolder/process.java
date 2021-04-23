@@ -29,8 +29,10 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class process {
@@ -103,15 +105,24 @@ public class process {
         return new SecretKeySpec(password.getBytes(), "AES");
     }
 
-    public static byte[] encryptMsg(String message, SecretKey secret)
+    public static byte[] encryptMsg(String message)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException
     {
         /* Encrypt the message. */
-        Cipher cipher = null;
-        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, secret);
-        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
-        return cipherText;
+//        Cipher cipher = null;
+//        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+//        cipher.init(Cipher.ENCRYPT_MODE, secret);
+//        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
+
+        byte[] plaintext = message.getBytes();
+        KeyGenerator keygen = KeyGenerator.getInstance("AES");
+        keygen.init(256);
+        SecretKey key = keygen.generateKey();
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] ciphertext = cipher.doFinal(plaintext);
+        byte[] iv = cipher.getIV();
+        return iv;
     }
 
     public static String decryptMsg(byte[] cipherText, SecretKey secret)
@@ -133,7 +144,7 @@ public class process {
 //            String newName= String.valueOf(encryptMsg(name,generateKey()));
 //            String newPath= parent + "/" + newName;
 //            Log.d("nhungltk", "createPath new: "+newPath);
-        return encryptMsg(name,generateKey());
+        return encryptMsg(name);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)

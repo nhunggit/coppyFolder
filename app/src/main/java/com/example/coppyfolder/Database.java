@@ -72,6 +72,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase= instance.getWritableDatabase(PASS_DB);
         int count=0;
         Cursor cursor= sqLiteDatabase.rawQuery(String.format("SELECT * FROM '%s';",TABLE_NAME), null);
+        Log.d("nhungltk", "getList: "+cursor.getCount());
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
             String pathEncrypt= cursor.getString(cursor.getColumnIndex(COLUMN_PATH_ENCRYPT));
