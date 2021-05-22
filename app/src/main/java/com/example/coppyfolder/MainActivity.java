@@ -1,6 +1,7 @@
 package com.example.coppyfolder;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
@@ -61,6 +62,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
     public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+ // public class MainActivity extends AppCompatActivity{
+
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     String path = null;
     private static final int REQUEST_CODE = 0;
@@ -76,6 +79,7 @@ import javax.crypto.spec.SecretKeySpec;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkPermission();
         process process= new process();
         try {
             Log.d("nhungltk", "onCreate: "+process.encryptMsg("nhungltk"));
@@ -254,37 +258,4 @@ import javax.crypto.spec.SecretKeySpec;
     protected void onResume() {
         super.onResume();
     }
-
-
-    //    public void encryptDataBase(String passphrase) throws IOException {
-//
-//        File originalFile = context.getDatabasePath(DB_NAME);
-//
-//        File newFile = File.createTempFile("sqlcipherutils", "tmp", context.getCacheDir());
-//
-//        SQLiteDatabase existing_db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, "", null, SQLiteDatabase.OPEN_READWRITE);
-//
-//        existing_db.rawExecSQL("ATTACH DATABASE '" + newFile.getPath() + "' AS encrypted KEY '" + passphrase + "';");
-//        existing_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
-//        existing_db.rawExecSQL("DETACH DATABASE encrypted;");
-//
-//        existing_db.close();
-//
-//        originalFile.delete();
-//
-//        newFile.renameTo(originalFile);
-//
-//    }
-
-//    private void InitializeSQLCipher() {
-//        SQLiteDatabase.loadLibs(this);
-//        File databaseFile = getDatabasePath("demo.db");
-//        databaseFile.mkdirs();
-//        databaseFile.delete();
-//        SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile, "test123", null);
-//        database.execSQL("create table t1(a, b)");
-//        database.execSQL("insert into t1(a, b) values(?, ?)", new Object[]{"one for the money",
-//                "two for the show"});
-//    }
-
 }

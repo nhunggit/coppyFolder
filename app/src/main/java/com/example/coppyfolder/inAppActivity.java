@@ -11,6 +11,7 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -47,6 +48,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class inAppActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private Button choosseFile;
+    private ImageButton mArowBack;
     private static final int FILE_SELECT_CODE = 0;
     String path = null;
     public List<Path> list;
@@ -84,6 +86,8 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
 
         choosseFile= (Button)findViewById(R.id.bt_choose_file);
         choosseFile.setOnClickListener(this);
+        mArowBack= (ImageButton)findViewById(R.id.arow_back);
+        mArowBack.setOnClickListener(this);
 
         SQLiteDatabase.loadLibs(this);
         database=Database.getInstance(this);
@@ -126,7 +130,10 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if(v.getId()==(R.id.bt_choose_file)) {
             showFileChooser();
+        }else if(v.getId()==R.id.arow_back){
+            finish();
         }
+
     }
     private void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -183,7 +190,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
                             database.insertPath(encrypt, path, decrypt);
                             list.add(0, new Path(encrypt,path,decrypt));
 
-                            secureAdapter.notifyItemInserted(0);
+                           // secureAdapter.notifyItemInserted(0);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         } catch (IOException e) {

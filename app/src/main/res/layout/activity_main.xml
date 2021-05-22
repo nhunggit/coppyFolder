@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,43 +5,58 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:gravity="center_horizontal"
-    android:orientation="horizontal"
-    android:background="@drawable/back_ground">
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:background="#00aaaaaa">
+
+            <TextView
+                android:id="@+id/txt_name_app"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Safe Space"
+                android:textColor="#59aee5"
+                android:textSize="24sp"/>
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="150dp"
+        android:src="@drawable/icon_safe_space"
+        android:layout_marginTop="55dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:id="@+id/ll_create_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="59dp"
+        android:layout_gravity="center_horizontal">
 
     <Button
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:id="@+id/login"
-        android:background="@color/white"
-        android:layout_gravity="center_vertical"/>
-<!--    <Button-->
-<!--        android:id="@+id/open_sms"-->
-<!--        android:layout_width="120dp"-->
-<!--        android:layout_height="130dp"-->
-<!--        android:layout_gravity="center_vertical"-->
-<!--        android:layout_marginRight="20dp"-->
-<!--        android:background="@drawable/ic_baseline_folder_open_24"-->
-<!--        android:gravity="bottom|center"-->
-<!--        android:paddingBottom="0dp"-->
-<!--        android:text="Open SMS"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="16dp" />-->
+        android:background="@drawable/button"
+        android:layout_gravity="center_vertical" />
 
-<!--    <Button-->
-<!--        android:layout_width="120dp"-->
-<!--        android:layout_height="130dp"-->
-<!--        android:background="@drawable/ic_baseline_folder_open_24"-->
-<!--        android:gravity="bottom|center"-->
-<!--        android:paddingBottom="0dp"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="16dp"-->
-<!--        android:id="@+id/open_files"-->
-<!--        android:text="Open Files"-->
-<!--        android:layout_marginLeft="20dp"-->
-<!--        android:layout_gravity="center_vertical" />-->
-
-
+    </LinearLayout>
 
 
 </LinearLayout>
