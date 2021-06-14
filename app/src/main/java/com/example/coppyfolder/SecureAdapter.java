@@ -74,6 +74,12 @@ public class SecureAdapter extends BaseAdapter {
         Bitmap bitmap= BitmapFactory.decodeFile(path.getDecrypt());
         imageButton.setImageBitmap(bitmap);
         convertView.setClickable(false);
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callbackListener.callback(position);
+            }
+        });
         return convertView;
     }
 

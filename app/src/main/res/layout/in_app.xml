@@ -51,6 +51,13 @@
                     android:layout_height="50dp"
                     android:background="@drawable/add_folder"
                     android:layout_marginRight="20dp"/>
+                <Button
+                    android:id="@+id/menu"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/icon_menu"
+                    android:layout_marginRight="20dp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

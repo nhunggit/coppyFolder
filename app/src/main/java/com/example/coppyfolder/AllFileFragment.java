@@ -38,6 +38,7 @@ public class AllFileFragment extends Fragment implements AdapterView.OnItemClick
         Log.d("nhungltk", "onCreateView: "+recyclerView);
         //recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setOnItemClickListener(this);
+        callbackListener.updateMenu(false);
         return view;
     }
 

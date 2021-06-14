@@ -50,6 +50,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase= instance.getWritableDatabase(PASS_DB);
 
         ContentValues contentValues= new ContentValues();
+
         contentValues.put(COLUMN_PATH_ENCRYPT,pathEncrypt);
         contentValues.put(COLUMN_PATH_DECRYPT,pathDecrypt);
         contentValues.put(COLUMN_DECRYPT, decrypt);

@@ -18,6 +18,7 @@ public class fragmentExternalView extends Fragment {
 
     private int possistion;
     private List<Path> list;
+    inAppActivity.callbackListener callbackListener;
 
     public fragmentExternalView(int possistion, List<Path>list) {
         this.possistion = possistion;

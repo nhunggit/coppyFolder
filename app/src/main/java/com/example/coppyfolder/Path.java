@@ -10,7 +10,7 @@ public class Path {
         this.pathEncrypt = pathEncrypt;
         this.pathDecrypt = pathDecrypt;
         this.decrypt = decrypt;
-        //this.id = id;
+        this.id = id;
     }
 
     public String getDecrypt() {

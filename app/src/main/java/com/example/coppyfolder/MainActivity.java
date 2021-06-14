@@ -100,9 +100,6 @@ import javax.crypto.spec.SecretKeySpec;
         }
         login= (Button)findViewById(R.id.login);
         login.setOnClickListener(this);
-//        Intent intent = new Intent(Intent.ACTION_RUN);
-//        intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.password.ChooseLockGeneric"));
-//        startActivity(intent);
 
         Executor executor = ContextCompat.getMainExecutor(this);
          biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
@@ -174,16 +171,9 @@ import javax.crypto.spec.SecretKeySpec;
         if (ContextCompat.checkSelfPermission(
                 getApplicationContext(), String.valueOf(REQUESTED_PERMISSION)) !=
                 PackageManager.PERMISSION_GRANTED) {
-            // You can use the API that requires the permission.
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     String.valueOf(REQUESTED_PERMISSION))) {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected. In this UI,
-                // include a "cancel" or "no thanks" button that allows the user to
-                // continue using your app without granting the permission.
-                //showInContextUI(...);
             } else {
-                // You can directly ask for the permission.
                 ActivityCompat.requestPermissions(this, REQUESTED_PERMISSION, REQUEST_CODE);
             }
         }

@@ -3,15 +3,18 @@ package com.example.coppyfolder;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -49,6 +52,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
     private Toolbar toolbar;
     private Button choosseFile;
     private ImageButton mArowBack;
+    private Button menu;
     private static final int FILE_SELECT_CODE = 0;
     String path = null;
     public List<Path> list;
@@ -61,14 +65,24 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
     private String folderDecrypt= folderSecure + File.separator+".Decrypt";
     private File encryptFolder;
     private File decryptFolder;
+    private  int mPosition;
     callbackListener callbackListener= new callbackListener () {
         @Override
         public void callback(int posistion) {
+            mPosition= posistion;
             FragmentManager manager = getSupportFragmentManager();
             fragmentExternalView fragmentExternalView= new fragmentExternalView(posistion,list);
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.fragment, fragmentExternalView).addToBackStack(null);
             transaction.commit();
+            choosseFile.setVisibility(View.GONE);
+            menu.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void updateMenu(boolean hasMenu) {
+            menu.setVisibility(View.GONE);
+            choosseFile.setVisibility(View.VISIBLE);
         }
     };
 
@@ -79,15 +93,14 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.in_app);
 
-//        toolbar= (Toolbar)findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
         process = new process();
 
         choosseFile= (Button)findViewById(R.id.bt_choose_file);
         choosseFile.setOnClickListener(this);
         mArowBack= (ImageButton)findViewById(R.id.arow_back);
         mArowBack.setOnClickListener(this);
+        menu= (Button)findViewById(R.id.menu);
+        menu.setOnClickListener(this);
 
         SQLiteDatabase.loadLibs(this);
         database=Database.getInstance(this);
@@ -132,6 +145,40 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
             showFileChooser();
         }else if(v.getId()==R.id.arow_back){
             finish();
+        }else if(v.getId()==R.id.menu){
+            PopupMenu popupMenu= new PopupMenu(getApplicationContext(), v);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getItemId()==(R.id.decrypt)){
+                            Path path_delete= list.get(mPosition);
+                            try {
+                                process.decrypt(new FileInputStream(path_delete.getPathEncrypt()),new FileOutputStream(path_delete.getPathDecrypt()));
+                                MediaScannerConnection.scanFile(getApplicationContext(), new String[]{path_delete.getPathDecrypt()}, null,
+                                        new MediaScannerConnection.OnScanCompletedListener() {
+                                            @Override
+                                            public void onScanCompleted(String path, Uri uri) {
+                                                Log.d("nhungltk", "onScanCompleted: ");
+                                            }
+                                        });
+                                list.remove(path_delete);
+                                Database.getInstance(getApplicationContext()).deletePath(path_delete.getPathEncrypt(),path_delete.getPathDecrypt());
+                                getSupportFragmentManager().popBackStack();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (NoSuchAlgorithmException e) {
+                                e.printStackTrace();
+                            } catch (NoSuchPaddingException e) {
+                                e.printStackTrace();
+                            } catch (InvalidKeyException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.inflate(R.menu.menu);
+                popupMenu.show();
         }
 
     }
@@ -189,7 +236,7 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
                             process.copyFile(new File(path),new File(decrypt));
                             database.insertPath(encrypt, path, decrypt);
                             list.add(0, new Path(encrypt,path,decrypt));
-
+                            secureAdapter.notifyDataSetChanged();
                            // secureAdapter.notifyItemInserted(0);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -217,5 +264,6 @@ public class inAppActivity extends AppCompatActivity implements View.OnClickList
 
     interface callbackListener{
         void callback(int posistion);
+        void updateMenu(boolean hasMenu);
     }
 }
